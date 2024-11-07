@@ -198,7 +198,7 @@ resource "aws_iam_role_policy_attachment" "aws-lambda-n70ol2gt-to-aws-dynamodb-i
 
 
 resource "aws_s3_bucket" "aws-s3-wnw8z876" {
-    bucket = "s3-bucket"
+    bucket = "s3-bucket-livin-jestina"
 }
 
 resource "aws_s3_bucket_public_access_block" "aws-s3-wnw8z876-block" {
