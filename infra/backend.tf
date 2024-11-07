@@ -5,8 +5,6 @@ terraform {
     key            = "dev/terraform.tfstate"
     region         = "us-east-1"
     dynamodb_table = "terraform-locks-hello-world-5963881-dev"
-    access_key     = var.aws_access_key
-    secret_key     = var.aws_secret_key
   }
 }
 
