@@ -154,3 +154,44 @@ resource "aws_lambda_function" "aws-lambda-n70ol2gt" {
         variables = {}
     }
 }
+
+
+resource "aws_dynamodb_table" "aws-dynamodb-iecjbx9t" {
+    name         = "aws-dynamodb-iecjbx9t"
+    billing_mode = "PAY_PER_REQUEST"
+    hash_key     = "id"
+    
+    stream_enabled = true
+    stream_view_type = "NEW_AND_OLD_IMAGES"
+    
+    attribute {
+        name = "id"
+        type = "S"
+    }
+    
+}
+
+
+resource "aws_iam_policy" "aws-lambda-n70ol2gt-to-aws-dynamodb-iecjbx9t-policy" {
+  name        = "aws-lambda-n70ol2gt-to-aws-dynamodb-iecjbx9t-policy"
+  description = "Policy for aws-lambda-n70ol2gt-to-aws-dynamodb-iecjbx9t"
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+            
+            
+            "dynamodb:*"
+        ]
+        Resource = aws_dynamodb_table.aws-dynamodb-iecjbx9t.arn
+      },
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "aws-lambda-n70ol2gt-to-aws-dynamodb-iecjbx9t-attachment" {
+  role       = aws_iam_role.aws-lambda-n70ol2gt-role.name
+  policy_arn = aws_iam_policy.aws-lambda-n70ol2gt-to-aws-dynamodb-iecjbx9t-policy.arn
+}
