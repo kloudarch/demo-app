@@ -36,24 +36,23 @@ provider "aws" {
   }
 }
 
-
-resource "aws_apigatewayv2_api" "aws-api-gateway-1" {
+resource "aws_apigatewayv2_api" "aws-api-gateway-fawzg7l3" {
   name          = "api-gateway"
   protocol_type = "HTTP"
 }
 
-resource "aws_cloudwatch_log_group" "aws-api-gateway-1-log-group" {
-  name              = "/aws/apigateway/aws-api-gateway-1"
+resource "aws_cloudwatch_log_group" "aws-api-gateway-fawzg7l3-log-group" {
+  name              = "/aws/apigateway/aws-api-gateway-fawzg7l3"
   retention_in_days = 7
 }
 
-resource "aws_apigatewayv2_stage" "aws-api-gateway-1-stage" {
-  api_id      = aws_apigatewayv2_api.aws-api-gateway-1.id
+resource "aws_apigatewayv2_stage" "aws-api-gateway-fawzg7l3-stage" {
+  api_id      = aws_apigatewayv2_api.aws-api-gateway-fawzg7l3.id
   name        = "dev"
   auto_deploy = true
 
   access_log_settings {
-    destination_arn = aws_cloudwatch_log_group.aws-api-gateway-1-log-group.arn
+    destination_arn = aws_cloudwatch_log_group.aws-api-gateway-fawzg7l3-log-group.arn
     format = jsonencode({
       requestId               = "$context.requestId"
       sourceIp                = "$context.identity.sourceIp"
@@ -69,42 +68,42 @@ resource "aws_apigatewayv2_stage" "aws-api-gateway-1-stage" {
   }
 }
 
-resource "aws_apigatewayv2_integration" "aws-api-gateway-1-to-aws-lambda-4-integration" {
-  api_id           = aws_apigatewayv2_api.aws-api-gateway-1.id
+resource "aws_apigatewayv2_integration" "aws-api-gateway-fawzg7l3-to-aws-lambda-cwsszlrf-integration" {
+  api_id           = aws_apigatewayv2_api.aws-api-gateway-fawzg7l3.id
   integration_type = "AWS_PROXY"
-  integration_uri  = aws_lambda_function.aws-lambda-4.invoke_arn
+  integration_uri  = aws_lambda_function.aws-lambda-cwsszlrf.invoke_arn
 }
 
-resource "aws_apigatewayv2_route" "aws-api-gateway-1-to-aws-lambda-4-route" {
-  api_id    = aws_apigatewayv2_api.aws-api-gateway-1.id
+resource "aws_apigatewayv2_route" "aws-api-gateway-fawzg7l3-to-aws-lambda-cwsszlrf-route" {
+  api_id    = aws_apigatewayv2_api.aws-api-gateway-fawzg7l3.id
   route_key = "GET /"
-  target    = "integrations/${aws_apigatewayv2_integration.aws-api-gateway-1-to-aws-lambda-4-integration.id}"
+  target    = "integrations/${aws_apigatewayv2_integration.aws-api-gateway-fawzg7l3-to-aws-lambda-cwsszlrf-integration.id}"
 }
 
-resource "aws_lambda_permission" "aws-api-gateway-1-to-aws-lambda-4-permission" {
-  statement_id  = "aws-api-gateway-1-to-aws-lambda-4-permission"
+resource "aws_lambda_permission" "aws-api-gateway-fawzg7l3-to-aws-lambda-cwsszlrf-permission" {
+  statement_id  = "aws-api-gateway-fawzg7l3-to-aws-lambda-cwsszlrf-permission"
   action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.aws-lambda-4.function_name
+  function_name = aws_lambda_function.aws-lambda-cwsszlrf.function_name
   principal     = "apigateway.amazonaws.com"
-  source_arn    = "${aws_apigatewayv2_api.aws-api-gateway-1.execution_arn}/*/*"
+  source_arn    = "${aws_apigatewayv2_api.aws-api-gateway-fawzg7l3.execution_arn}/*/*"
 }
 
 
-data "archive_file" "aws-lambda-4-archive" {
+data "archive_file" "aws-lambda-cwsszlrf-archive" {
   type        = "zip"
   source_dir  = "../src"
-  output_path = ".output/aws-lambda-4-code.zip"
+  output_path = ".output/aws-lambda-cwsszlrf-code.zip"
 }
 
 
-resource "aws_cloudwatch_log_group" "aws-lambda-4-log-group" {
-  name              = "/aws/lambda/aws-lambda-4"
+resource "aws_cloudwatch_log_group" "aws-lambda-cwsszlrf-log-group" {
+  name              = "/aws/lambda/aws-lambda-cwsszlrf"
   retention_in_days = 7
 }
 
 
-resource "aws_iam_role" "aws-lambda-4-role" {
-  name = "aws-lambda-4-role"
+resource "aws_iam_role" "aws-lambda-cwsszlrf-role" {
+  name = "aws-lambda-cwsszlrf-role"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -121,23 +120,23 @@ resource "aws_iam_role" "aws-lambda-4-role" {
 }
 
 
-resource "aws_iam_role_policy_attachment" "aws-lambda-4-policy-attachment" {
-  role       = aws_iam_role.aws-lambda-4-role.name
+resource "aws_iam_role_policy_attachment" "aws-lambda-cwsszlrf-policy-attachment" {
+  role       = aws_iam_role.aws-lambda-cwsszlrf-role.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
 }
 
 
-resource "aws_lambda_function" "aws-lambda-4" {
-  function_name    = "aws-lambda-4"
-  role             = aws_iam_role.aws-lambda-4-role.arn
+resource "aws_lambda_function" "aws-lambda-cwsszlrf" {
+  function_name    = "aws-lambda-cwsszlrf"
+  role             = aws_iam_role.aws-lambda-cwsszlrf-role.arn
   handler          = "index.handler"
   runtime          = "nodejs20.x"
   timeout          = 30
   memory_size      = 128
-  filename         = data.archive_file.aws-lambda-4-archive.output_path
-  source_code_hash = data.archive_file.aws-lambda-4-archive.output_base64sha256
+  filename         = data.archive_file.aws-lambda-cwsszlrf-archive.output_path
+  source_code_hash = data.archive_file.aws-lambda-cwsszlrf-archive.output_base64sha256
   logging_config {
-    log_group  = aws_cloudwatch_log_group.aws-lambda-4-log-group.name
+    log_group  = aws_cloudwatch_log_group.aws-lambda-cwsszlrf-log-group.name
     log_format = "JSON"
   }
 
