@@ -1,13 +1,13 @@
 # Backend configuration
-# terraform {
-#   backend "s3" {
-#     bucket         = "terraform-states-hello-world-5963881-dev"
-#     key            = "dev/terraform.tfstate"
-#     region         = "us-east-1"
-#     dynamodb_table = "terraform-locks-hello-world-5963881-dev"
-#     profile        = "ka-livin"
-#   }
-# }
+terraform {
+  backend "s3" {
+    bucket         = "terraform-states-hello-world-5963881-dev"
+    key            = "dev/terraform.tfstate"
+    region         = "us-east-1"
+    dynamodb_table = "terraform-locks-hello-world-5963881-dev"
+    profile        = "ka-livin"
+  }
+}
 
 # Create a new S3 bucket for Terraform state
 resource "aws_s3_bucket" "terraform_state" {
