@@ -92,7 +92,7 @@ resource "aws_lambda_permission" "aws-api-gateway-1-to-aws-lambda-4-permission" 
 
 data "archive_file" "aws-lambda-4-archive" {
   type        = "zip"
-  source_dir  = "../"
+  source_dir  = "../src"
   output_path = ".output/aws-lambda-4-code.zip"
 }
 
