@@ -144,3 +144,7 @@ resource "aws_lambda_function" "aws-lambda-cwsszlrf" {
     variables = {}
   }
 }
+
+output "api_endpoint" {
+  value = aws_apigatewayv2_stage.aws-api-gateway-fawzg7l3-stage.invoke_url
+}
