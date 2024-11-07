@@ -195,3 +195,49 @@ resource "aws_iam_role_policy_attachment" "aws-lambda-n70ol2gt-to-aws-dynamodb-i
   role       = aws_iam_role.aws-lambda-n70ol2gt-role.name
   policy_arn = aws_iam_policy.aws-lambda-n70ol2gt-to-aws-dynamodb-iecjbx9t-policy.arn
 }
+
+
+resource "aws_s3_bucket" "aws-s3-wnw8z876" {
+    bucket = "s3-bucket"
+}
+
+resource "aws_s3_bucket_public_access_block" "aws-s3-wnw8z876-block" {
+    bucket                  = aws_s3_bucket.aws-s3-wnw8z876.id
+    block_public_acls       = true
+    block_public_policy     = true
+    ignore_public_acls      = true
+    restrict_public_buckets = true
+}
+
+resource "aws_s3_bucket_versioning" "aws-s3-wnw8z876-versioning" {
+    bucket = aws_s3_bucket.aws-s3-wnw8z876.id
+    versioning_configuration {
+        status = "Enabled"
+    }
+}
+
+resource "aws_iam_policy" "aws-lambda-n70ol2gt-to-aws-s3-wnw8z876-policy" {
+  name        = "aws-lambda-n70ol2gt-to-aws-s3-wnw8z876-policy"
+  path        = "/"
+  description = "Policy for aws-lambda-n70ol2gt-to-aws-s3-wnw8z876"
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = [
+            "s3:GetObject","s3:ListObject","s3:GetObjectVersion"
+            
+            
+            
+        ]
+        Effect = "Allow"
+        Resource = "${aws_s3_bucket.aws-s3-wnw8z876.arn}/*"
+      },
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "aws-lambda-n70ol2gt-to-aws-s3-wnw8z876-attachment" {
+  role       = aws_iam_role.aws-lambda-n70ol2gt-role.name
+  policy_arn = aws_iam_policy.aws-lambda-n70ol2gt-to-aws-s3-wnw8z876-policy.arn
+}
