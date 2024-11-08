@@ -26,7 +26,7 @@ variable "environment" {
 variable "project_name" {
   type        = string
   description = "Project name"
-  default     = "hello-world-5963881"
+  default     = "test12-6204144"
 }
 
 provider "aws" {
@@ -42,23 +42,23 @@ provider "aws" {
 }
   
 
-resource "aws_apigatewayv2_api" "aws-api-gateway-iqaze6zu" {
-    name          = "hello-world-api"
+resource "aws_apigatewayv2_api" "aws-api-gateway-1" {
+    name          = "api-gateway"
     protocol_type = "HTTP"
 }
 
-resource "aws_cloudwatch_log_group" "aws-api-gateway-iqaze6zu-log-group" {
-    name              = "/aws/apigateway/aws-api-gateway-iqaze6zu"
+resource "aws_cloudwatch_log_group" "aws-api-gateway-1-log-group" {
+    name              = "/aws/apigateway/aws-api-gateway-1"
     retention_in_days = 7
 }
 
-resource "aws_apigatewayv2_stage" "aws-api-gateway-iqaze6zu-stage" {
-    api_id      = aws_apigatewayv2_api.aws-api-gateway-iqaze6zu.id
+resource "aws_apigatewayv2_stage" "aws-api-gateway-1-stage" {
+    api_id      = aws_apigatewayv2_api.aws-api-gateway-1.id
     name        = "dev"
     auto_deploy = true
     
     access_log_settings {
-        destination_arn = aws_cloudwatch_log_group.aws-api-gateway-iqaze6zu-log-group.arn
+        destination_arn = aws_cloudwatch_log_group.aws-api-gateway-1-log-group.arn
         format = jsonencode({
             requestId               = "$context.requestId"
             sourceIp                = "$context.identity.sourceIp"
@@ -75,45 +75,45 @@ resource "aws_apigatewayv2_stage" "aws-api-gateway-iqaze6zu-stage" {
 }
 
 output "stage_endpoint" {
-    value = aws_apigatewayv2_stage.aws-api-gateway-iqaze6zu-stage.invoke_url
+    value = aws_apigatewayv2_stage.aws-api-gateway-1-stage.invoke_url
 }
 
-resource "aws_apigatewayv2_integration" "aws-api-gateway-iqaze6zu-to-aws-lambda-n70ol2gt-integration" {
-    api_id           = aws_apigatewayv2_api.aws-api-gateway-iqaze6zu.id
+resource "aws_apigatewayv2_integration" "aws-api-gateway-1-to-aws-lambda-4-integration" {
+    api_id           = aws_apigatewayv2_api.aws-api-gateway-1.id
     integration_type = "AWS_PROXY"
-    integration_uri  = aws_lambda_function.aws-lambda-n70ol2gt.invoke_arn
+    integration_uri  = aws_lambda_function.aws-lambda-4.invoke_arn
 }
 
-resource "aws_apigatewayv2_route" "aws-api-gateway-iqaze6zu-to-aws-lambda-n70ol2gt-route" {
-    api_id    = aws_apigatewayv2_api.aws-api-gateway-iqaze6zu.id
-    route_key = "GET /"
-    target    = "integrations/${aws_apigatewayv2_integration.aws-api-gateway-iqaze6zu-to-aws-lambda-n70ol2gt-integration.id}"
+resource "aws_apigatewayv2_route" "aws-api-gateway-1-to-aws-lambda-4-route" {
+    api_id    = aws_apigatewayv2_api.aws-api-gateway-1.id
+    route_key = "POST /"
+    target    = "integrations/${aws_apigatewayv2_integration.aws-api-gateway-1-to-aws-lambda-4-integration.id}"
 }
     
-resource "aws_lambda_permission" "aws-api-gateway-iqaze6zu-to-aws-lambda-n70ol2gt-permission" {
-    statement_id  = "aws-api-gateway-iqaze6zu-to-aws-lambda-n70ol2gt-permission"
+resource "aws_lambda_permission" "aws-api-gateway-1-to-aws-lambda-4-permission" {
+    statement_id  = "aws-api-gateway-1-to-aws-lambda-4-permission"
     action        = "lambda:InvokeFunction"
-    function_name = aws_lambda_function.aws-lambda-n70ol2gt.function_name
+    function_name = aws_lambda_function.aws-lambda-4.function_name
     principal     = "apigateway.amazonaws.com"
-    source_arn    = "${aws_apigatewayv2_api.aws-api-gateway-iqaze6zu.execution_arn}/*/*"
+    source_arn    = "${aws_apigatewayv2_api.aws-api-gateway-1.execution_arn}/*/*"
 }
 
 
-data "archive_file" "aws-lambda-n70ol2gt-archive" {
+data "archive_file" "aws-lambda-4-archive" {
     type        = "zip"
-    source_dir  = "../src"
-    output_path = ".output/aws-lambda-n70ol2gt-code.zip"
+    source_dir  = "../build"
+    output_path = ".output/aws-lambda-4-code.zip"
 }
 
 
-resource "aws_cloudwatch_log_group" "aws-lambda-n70ol2gt-log-group" {
-    name              = "/aws/lambda/aws-lambda-n70ol2gt"
+resource "aws_cloudwatch_log_group" "aws-lambda-4-log-group" {
+    name              = "/aws/lambda/aws-lambda-4"
     retention_in_days = 7
 }
 
 
-resource "aws_iam_role" "aws-lambda-n70ol2gt-role" {
-    name = "aws-lambda-n70ol2gt-role"
+resource "aws_iam_role" "aws-lambda-4-role" {
+    name = "aws-lambda-4-role"
 
     assume_role_policy = jsonencode({
         Version = "2012-10-17"
@@ -130,114 +130,27 @@ resource "aws_iam_role" "aws-lambda-n70ol2gt-role" {
 }
 
 
-resource "aws_iam_role_policy_attachment" "aws-lambda-n70ol2gt-policy-attachment" {
-    role       = aws_iam_role.aws-lambda-n70ol2gt-role.name
+resource "aws_iam_role_policy_attachment" "aws-lambda-4-policy-attachment" {
+    role       = aws_iam_role.aws-lambda-4-role.name
     policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
 }
 
 
-resource "aws_lambda_function" "aws-lambda-n70ol2gt" {
-    function_name    = "aws-lambda-n70ol2gt"
-    role             = aws_iam_role.aws-lambda-n70ol2gt-role.arn
+resource "aws_lambda_function" "aws-lambda-4" {
+    function_name    = "aws-lambda-4"
+    role             = aws_iam_role.aws-lambda-4-role.arn
     handler          = "index.handler"
     runtime          = "nodejs20.x"
     timeout          = 30
     memory_size      = 128
-    filename         = data.archive_file.aws-lambda-n70ol2gt-archive.output_path
-    source_code_hash = data.archive_file.aws-lambda-n70ol2gt-archive.output_base64sha256
+    filename         = data.archive_file.aws-lambda-4-archive.output_path
+    source_code_hash = data.archive_file.aws-lambda-4-archive.output_base64sha256
     logging_config {
-        log_group  = aws_cloudwatch_log_group.aws-lambda-n70ol2gt-log-group.name
+        log_group  = aws_cloudwatch_log_group.aws-lambda-4-log-group.name
         log_format = "JSON"
     }
 
     environment {
         variables = {}
     }
-}
-
-
-resource "aws_dynamodb_table" "aws-dynamodb-iecjbx9t" {
-    name         = "aws-dynamodb-iecjbx9t"
-    billing_mode = "PAY_PER_REQUEST"
-    hash_key     = "id"
-    
-    stream_enabled = true
-    stream_view_type = "NEW_AND_OLD_IMAGES"
-    
-    attribute {
-        name = "id"
-        type = "S"
-    }
-    
-}
-
-
-resource "aws_iam_policy" "aws-lambda-n70ol2gt-to-aws-dynamodb-iecjbx9t-policy" {
-  name        = "aws-lambda-n70ol2gt-to-aws-dynamodb-iecjbx9t-policy"
-  description = "Policy for aws-lambda-n70ol2gt-to-aws-dynamodb-iecjbx9t"
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Effect = "Allow"
-        Action = [
-            
-            
-            "dynamodb:*"
-        ]
-        Resource = aws_dynamodb_table.aws-dynamodb-iecjbx9t.arn
-      },
-    ]
-  })
-}
-
-resource "aws_iam_role_policy_attachment" "aws-lambda-n70ol2gt-to-aws-dynamodb-iecjbx9t-attachment" {
-  role       = aws_iam_role.aws-lambda-n70ol2gt-role.name
-  policy_arn = aws_iam_policy.aws-lambda-n70ol2gt-to-aws-dynamodb-iecjbx9t-policy.arn
-}
-
-
-resource "aws_s3_bucket" "aws-s3-wnw8z876" {
-    bucket = "s3-bucket-livin-jestina"
-}
-
-resource "aws_s3_bucket_public_access_block" "aws-s3-wnw8z876-block" {
-    bucket                  = aws_s3_bucket.aws-s3-wnw8z876.id
-    block_public_acls       = true
-    block_public_policy     = true
-    ignore_public_acls      = true
-    restrict_public_buckets = true
-}
-
-resource "aws_s3_bucket_versioning" "aws-s3-wnw8z876-versioning" {
-    bucket = aws_s3_bucket.aws-s3-wnw8z876.id
-    versioning_configuration {
-        status = "Enabled"
-    }
-}
-
-resource "aws_iam_policy" "aws-lambda-n70ol2gt-to-aws-s3-wnw8z876-policy" {
-  name        = "aws-lambda-n70ol2gt-to-aws-s3-wnw8z876-policy"
-  path        = "/"
-  description = "Policy for aws-lambda-n70ol2gt-to-aws-s3-wnw8z876"
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Action = [
-            "s3:GetObject","s3:ListObject","s3:GetObjectVersion"
-            
-            
-            
-        ]
-        Effect = "Allow"
-        Resource = "${aws_s3_bucket.aws-s3-wnw8z876.arn}/*"
-      },
-    ]
-  })
-}
-
-resource "aws_iam_role_policy_attachment" "aws-lambda-n70ol2gt-to-aws-s3-wnw8z876-attachment" {
-  role       = aws_iam_role.aws-lambda-n70ol2gt-role.name
-  policy_arn = aws_iam_policy.aws-lambda-n70ol2gt-to-aws-s3-wnw8z876-policy.arn
 }
